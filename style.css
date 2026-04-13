@@ -1,298 +1,307 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+const tours = [
+  {
+    id: "tour-a-day",
+    name: "Tour A — Classic Yehliu, Jiufen & Shifen Day Tour",
+    shortLabel: "Most Popular",
+    price: 630,
+    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
+    description: "The most popular day trip from Taipei, covering all the classic highlights in one day.",
+    mainStops: [
+      "Yehliu Geopark",
+      "Shifen Waterfall",
+      "Shifen Old Street (Sky Lantern)",
+      "Jiufen Old Street"
+    ],
+    duration: "08:15 – 17:30",
+    bestFor: "First-time visitors who want the classic daytime experience.",
+    included: [
+      "Air-conditioned transportation",
+      "English-speaking guide"
+    ],
+    notIncluded: [
+      "Food & drinks",
+      "Sky lantern fee",
+      "Entrance tickets"
+    ]
+  },
+  {
+    id: "tour-a-night",
+    name: "Tour A — Yehliu, Shifen & Jiufen Night View Tour",
+    shortLabel: "Night View",
+    price: 630,
+    image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
+    description: "Same classic route as Tour A, but visit Jiufen in the evening for a unique night atmosphere.",
+    mainStops: [
+      "Yehliu Geopark",
+      "Shifen Waterfall",
+      "Shifen Old Street (Sky Lantern)",
+      "Jiufen Old Street (Night View)"
+    ],
+    duration: "11:15 – 20:30",
+    bestFor: "Travelers who want to see Jiufen at night.",
+    included: [
+      "Air-conditioned transportation",
+      "English-speaking guide"
+    ],
+    notIncluded: [
+      "Food & drinks",
+      "Sky lantern fee",
+      "Entrance tickets"
+    ]
+  },
+  {
+    id: "tour-b",
+    name: "Tour B — Extended Yehliu, Jiufen & Shifen Scenic Tour",
+    shortLabel: "More Scenic Stops",
+    price: 750,
+    image: "https://images.unsplash.com/photo-1512100356356-de1b84283e18?auto=format&fit=crop&w=1200&q=80",
+    description: "Includes all the classic stops plus extra scenic spots like Golden Waterfall and Yin-Yang Sea.",
+    mainStops: [
+      "Yehliu Geopark",
+      "Shifen Old Street",
+      "Shifen Waterfall",
+      "Golden Waterfall",
+      "Yin-Yang Sea",
+      "Shuinandong",
+      "Jiufen Old Street"
+    ],
+    duration: "09:45 – 19:30",
+    bestFor: "Travelers who want more photo stops and scenic views.",
+    included: [
+      "Air-conditioned transportation",
+      "English-speaking guide"
+    ],
+    notIncluded: [
+      "Food & drinks",
+      "Sky lantern fee",
+      "Entrance tickets"
+    ]
+  },
+  {
+    id: "tour-c",
+    name: "Tour C — Tiaoshi Coast Scenic Tour",
+    shortLabel: "Instagram Spot",
+    price: 1020,
+    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80",
+    description: "A scenic coastal route featuring the famous Tiaoshi Coast, a popular Instagram photo spot, plus Yehliu and Jiufen.",
+    mainStops: [
+      "Tiaoshi Coast (Instagram Spot)",
+      "Yehliu Geopark",
+      "Shifen Old Street",
+      "Golden Waterfall",
+      "Yin-Yang Sea",
+      "Shuinandong",
+      "Jiufen Old Street"
+    ],
+    duration: "10:30 – 20:30",
+    bestFor: "Travelers who want unique coastal views and Instagram-worthy locations.",
+    highlight: "Includes Tiaoshi Coast, a popular photo spot.",
+    included: [
+      "Air-conditioned transportation",
+      "English-speaking guide"
+    ],
+    notIncluded: [
+      "Food & drinks",
+      "Sky lantern fee",
+      "Entrance tickets"
+    ]
+  }
+];
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+const productsEl = document.getElementById("products");
+const cartItemsEl = document.getElementById("cart-items");
+const cartTotalEl = document.getElementById("cart-total");
+const checkoutBtn = document.getElementById("checkout-btn");
+const clearCartBtn = document.getElementById("clear-cart-btn");
+
+function formatPrice(amount) {
+  return "NT$" + amount.toLocaleString("en-US");
 }
 
-body {
-  font-family: Arial, "Noto Sans", sans-serif;
-  background: #f5f7fb;
-  color: #222;
-  line-height: 1.6;
+function saveCart() {
+  localStorage.setItem("cart", JSON.stringify(cart));
 }
 
-.container {
-  width: 92%;
-  max-width: 1200px;
-  margin: 0 auto;
+function renderProducts() {
+  productsEl.innerHTML = "";
+
+  tours.forEach(function (tour) {
+    const card = document.createElement("div");
+    card.className = "product-card";
+
+    const mainStopsHtml = tour.mainStops.map(function (stop) {
+      return "<li>" + stop + "</li>";
+    }).join("");
+
+    const includedHtml = tour.included.map(function (item) {
+      return "<li>" + item + "</li>";
+    }).join("");
+
+    const notIncludedHtml = tour.notIncluded.map(function (item) {
+      return "<li>" + item + "</li>";
+    }).join("");
+
+    const highlightHtml = tour.highlight
+      ? `<p class="highlight-text">${tour.highlight}</p>`
+      : "";
+
+    card.innerHTML = `
+      <img src="${tour.image}" alt="${tour.name}">
+      <div class="product-content">
+        <div class="badge-row">
+          <span class="badge">${tour.shortLabel}</span>
+        </div>
+
+        <h3>${tour.name}</h3>
+        <p class="price">${formatPrice(tour.price)} / person</p>
+        <p class="description">${tour.description}</p>
+
+        <div class="info-box">
+          <h4>Main Stops</h4>
+          <ul>${mainStopsHtml}</ul>
+        </div>
+
+        <div class="info-box">
+          <h4>Tour Info</h4>
+          <p class="duration">Time: ${tour.duration}</p>
+          <p class="best-for">Best for: ${tour.bestFor}</p>
+          ${highlightHtml}
+        </div>
+
+        <div class="info-box">
+          <h4>Included</h4>
+          <ul>${includedHtml}</ul>
+        </div>
+
+        <div class="info-box">
+          <h4>Not Included</h4>
+          <ul>${notIncludedHtml}</ul>
+        </div>
+
+        <div class="booking-controls">
+          <div>
+            <label for="date-${tour.id}">Travel Date</label>
+            <input type="date" id="date-${tour.id}">
+          </div>
+
+          <div>
+            <label for="people-${tour.id}">Number of People</label>
+            <input type="number" id="people-${tour.id}" min="1" value="1">
+          </div>
+        </div>
+
+        <button class="add-btn" data-id="${tour.id}">Add to Cart</button>
+      </div>
+    `;
+
+    productsEl.appendChild(card);
+  });
+
+  const addButtons = document.querySelectorAll(".add-btn");
+  addButtons.forEach(function (button) {
+    button.addEventListener("click", handleAddToCart);
+  });
 }
 
-.hero {
-  background: #111827;
-  color: white;
-  padding: 56px 20px;
-  text-align: center;
-}
+function handleAddToCart(event) {
+  const tourId = event.target.dataset.id;
+  const tour = tours.find(function (item) {
+    return item.id === tourId;
+  });
 
-.hero h1 {
-  font-size: 2.4rem;
-  margin-bottom: 12px;
-}
+  const dateInput = document.getElementById("date-" + tourId);
+  const peopleInput = document.getElementById("people-" + tourId);
 
-.hero-subtitle {
-  max-width: 760px;
-  margin: 0 auto;
-  font-size: 1.05rem;
-  color: #e5e7eb;
-}
+  const selectedDate = dateInput.value;
+  const people = Number(peopleInput.value);
 
-.main-layout {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 24px;
-  padding: 32px 0 40px;
-}
-
-.section-heading {
-  margin-bottom: 20px;
-}
-
-.section-heading h2 {
-  font-size: 2rem;
-  margin-bottom: 8px;
-}
-
-.section-heading p {
-  color: #555;
-}
-
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
-}
-
-.product-card {
-  background: white;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e5e7eb;
-}
-
-.product-card img {
-  width: 100%;
-  height: 230px;
-  object-fit: cover;
-  display: block;
-}
-
-.product-content {
-  padding: 18px;
-}
-
-.badge-row {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 10px;
-}
-
-.badge {
-  display: inline-block;
-  font-size: 0.8rem;
-  font-weight: bold;
-  padding: 5px 10px;
-  border-radius: 999px;
-  background: #eef2ff;
-  color: #3730a3;
-}
-
-.product-content h3 {
-  font-size: 1.25rem;
-  margin-bottom: 8px;
-}
-
-.price {
-  color: #0f62fe;
-  font-weight: bold;
-  margin-bottom: 10px;
-  font-size: 1.05rem;
-}
-
-.description {
-  color: #444;
-  margin-bottom: 14px;
-}
-
-.info-box {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 12px;
-  margin-bottom: 12px;
-}
-
-.info-box h4 {
-  font-size: 0.95rem;
-  margin-bottom: 8px;
-}
-
-.info-box ul {
-  padding-left: 18px;
-}
-
-.info-box li {
-  margin-bottom: 4px;
-}
-
-.highlight-text {
-  margin-top: 6px;
-  font-size: 0.92rem;
-  color: #b45309;
-  font-weight: bold;
-}
-
-.duration {
-  font-size: 0.95rem;
-  font-weight: bold;
-  color: #111827;
-}
-
-.best-for {
-  font-size: 0.95rem;
-  color: #374151;
-}
-
-.booking-controls {
-  display: grid;
-  gap: 10px;
-  margin-top: 12px;
-}
-
-.booking-controls label {
-  font-size: 0.92rem;
-  font-weight: bold;
-  display: block;
-  margin-bottom: 4px;
-}
-
-.booking-controls input,
-.booking-controls select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  font-size: 1rem;
-  background: white;
-}
-
-.add-btn {
-  margin-top: 12px;
-  width: 100%;
-  border: none;
-  background: #0f62fe;
-  color: white;
-  padding: 12px;
-  border-radius: 10px;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-.add-btn:hover {
-  opacity: 0.92;
-}
-
-.cart-section {
-  background: white;
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  align-self: start;
-  position: sticky;
-  top: 20px;
-  border: 1px solid #e5e7eb;
-}
-
-.cart-section h2 {
-  margin-bottom: 16px;
-}
-
-.cart-items {
-  margin-bottom: 20px;
-}
-
-.cart-item {
-  border-bottom: 1px solid #e5e7eb;
-  padding: 12px 0;
-}
-
-.cart-item:last-child {
-  border-bottom: none;
-}
-
-.cart-item-title {
-  font-weight: bold;
-  margin-bottom: 6px;
-}
-
-.cart-item-text {
-  font-size: 0.95rem;
-  color: #444;
-  margin-bottom: 4px;
-}
-
-.remove-btn {
-  margin-top: 8px;
-  border: none;
-  background: #ef4444;
-  color: white;
-  padding: 8px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.remove-btn:hover {
-  opacity: 0.92;
-}
-
-.cart-total {
-  font-size: 1.12rem;
-  margin-bottom: 14px;
-}
-
-.secondary-btn,
-.checkout-btn {
-  width: 100%;
-  border: none;
-  padding: 13px;
-  border-radius: 10px;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-.secondary-btn {
-  background: #e5e7eb;
-  color: #111827;
-  margin-bottom: 10px;
-}
-
-.checkout-btn {
-  background: #111827;
-  color: white;
-}
-
-.secondary-btn:disabled,
-.checkout-btn:disabled {
-  background: #d1d5db;
-  color: #6b7280;
-  cursor: not-allowed;
-}
-
-.empty-cart {
-  color: #666;
-}
-
-@media (max-width: 900px) {
-  .main-layout {
-    grid-template-columns: 1fr;
+  if (!selectedDate) {
+    alert("Please select a travel date.");
+    return;
   }
 
-  .products-grid {
-    grid-template-columns: 1fr;
+  if (!people || people < 1) {
+    alert("Please enter a valid number of people.");
+    return;
   }
 
-  .cart-section {
-    position: static;
-  }
+  const subtotal = tour.price * people;
+
+  const cartItem = {
+    cartId: Date.now() + Math.random().toString(16).slice(2),
+    id: tour.id,
+    name: tour.name,
+    price: tour.price,
+    date: selectedDate,
+    people: people,
+    subtotal: subtotal
+  };
+
+  cart.push(cartItem);
+  saveCart();
+  renderCart();
 }
+
+function renderCart() {
+  if (cart.length === 0) {
+    cartItemsEl.innerHTML = '<p class="empty-cart">Your cart is empty.</p>';
+    cartTotalEl.textContent = "NT$0";
+    checkoutBtn.disabled = true;
+    clearCartBtn.disabled = true;
+    return;
+  }
+
+  cartItemsEl.innerHTML = "";
+  let total = 0;
+
+  cart.forEach(function (item) {
+    total += item.subtotal;
+
+    const div = document.createElement("div");
+    div.className = "cart-item";
+
+    div.innerHTML = `
+      <div class="cart-item-title">${item.name}</div>
+      <div class="cart-item-text">Date: ${item.date}</div>
+      <div class="cart-item-text">Price: ${formatPrice(item.price)} / person</div>
+      <div class="cart-item-text">People: ${item.people}</div>
+      <div class="cart-item-text">Subtotal: ${formatPrice(item.subtotal)}</div>
+      <button class="remove-btn" data-cart-id="${item.cartId}">Remove</button>
+    `;
+
+    cartItemsEl.appendChild(div);
+  });
+
+  cartTotalEl.textContent = formatPrice(total);
+  checkoutBtn.disabled = false;
+  clearCartBtn.disabled = false;
+
+  const removeButtons = document.querySelectorAll(".remove-btn");
+  removeButtons.forEach(function (button) {
+    button.addEventListener("click", handleRemoveFromCart);
+  });
+}
+
+function handleRemoveFromCart(event) {
+  const cartId = event.target.dataset.cartId;
+  cart = cart.filter(function (item) {
+    return item.cartId !== cartId;
+  });
+  saveCart();
+  renderCart();
+}
+
+clearCartBtn.addEventListener("click", function () {
+  cart = [];
+  saveCart();
+  renderCart();
+});
+
+checkoutBtn.addEventListener("click", function () {
+  alert("Next step: connect this cart to Google Form.");
+});
+
+renderProducts();
+renderCart();
