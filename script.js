@@ -36,15 +36,23 @@ const cartTotalEl = document.getElementById("cart-total");
 const checkoutBtn = document.getElementById("checkout-btn");
 
 function formatPrice(amount) {
-  return `NT$${amount.toLocaleString("en-US")}`;
+  return "NT$" + amount.toLocaleString("en-US");
 }
 
 function renderProducts() {
   productsEl.innerHTML = "";
 
-  tours.forEach((tour) => {
+  tours.forEach(function (tour) {
     const card = document.createElement("div");
     card.className = "product-card";
+
+    const includedHtml = tour.included.map(function (item) {
+      return "<li>" + item + "</li>";
+    }).join("");
+
+    const notIncludedHtml = tour.notIncluded.map(function (item) {
+      return "<li>" + item + "</li>";
+    }).join("");
 
     card.innerHTML = `
       <img src="${tour.image}" alt="${tour.name}">
@@ -55,16 +63,12 @@ function renderProducts() {
 
         <div class="details-box">
           <h4>Included</h4>
-          <ul>
-            ${tour.included.map(item => `<li>${item}</li>`).join("")}
-          </ul>
+          <ul>${includedHtml}</ul>
         </div>
 
         <div class="details-box">
           <h4>Not Included</h4>
-          <ul>
-            ${tour.notIncluded.map(item => `<li>${item}</li>`).join("")}
-          </ul>
+          <ul>${notIncludedHtml}</ul>
         </div>
 
         <div class="booking-controls">
@@ -86,17 +90,20 @@ function renderProducts() {
     productsEl.appendChild(card);
   });
 
-  document.querySelectorAll(".add-btn").forEach((button) => {
+  const addButtons = document.querySelectorAll(".add-btn");
+  addButtons.forEach(function (button) {
     button.addEventListener("click", handleAddToCart);
   });
 }
 
 function handleAddToCart(event) {
   const tourId = event.target.dataset.id;
-  const tour = tours.find((item) => item.id === tourId);
+  const tour = tours.find(function (item) {
+    return item.id === tourId;
+  });
 
-  const dateInput = document.getElementById(`date-${tourId}`);
-  const peopleInput = document.getElementById(`people-${tourId}`);
+  const dateInput = document.getElementById("date-" + tourId);
+  const peopleInput = document.getElementById("people-" + tourId);
 
   const selectedDate = dateInput.value;
   const people = Number(peopleInput.value);
@@ -129,17 +136,16 @@ function handleAddToCart(event) {
 
 function renderCart() {
   if (cart.length === 0) {
-    cartItemsEl.innerHTML = `<p class="empty-cart">Your cart is empty.</p>`;
+    cartItemsEl.innerHTML = '<p class="empty-cart">Your cart is empty.</p>';
     cartTotalEl.textContent = "NT$0";
     checkoutBtn.disabled = true;
     return;
   }
 
   cartItemsEl.innerHTML = "";
-
   let total = 0;
 
-  cart.forEach((item) => {
+  cart.forEach(function (item) {
     total += item.subtotal;
 
     const div = document.createElement("div");
@@ -160,18 +166,21 @@ function renderCart() {
   cartTotalEl.textContent = formatPrice(total);
   checkoutBtn.disabled = false;
 
-  document.querySelectorAll(".remove-btn").forEach((button) => {
+  const removeButtons = document.querySelectorAll(".remove-btn");
+  removeButtons.forEach(function (button) {
     button.addEventListener("click", handleRemoveFromCart);
   });
 }
 
 function handleRemoveFromCart(event) {
   const cartId = event.target.dataset.cartId;
-  cart = cart.filter((item) => item.cartId !== cartId);
+  cart = cart.filter(function (item) {
+    return item.cartId !== cartId;
+  });
   renderCart();
 }
 
-checkoutBtn.addEventListener("click", () => {
+checkoutBtn.addEventListener("click", function () {
   alert("Next step: connect this cart to Google Form.");
 });
 
