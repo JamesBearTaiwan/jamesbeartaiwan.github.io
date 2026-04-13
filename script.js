@@ -28,7 +28,8 @@ const tours = [
   }
 ];
 
-let cart = [];
+renderCart();
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 const productsEl = document.getElementById("products");
 const cartItemsEl = document.getElementById("cart-items");
@@ -131,7 +132,8 @@ function handleAddToCart(event) {
   };
 
   cart.push(cartItem);
-  renderCart();
+saveCart();
+renderCart();
 }
 
 function renderCart() {
@@ -175,9 +177,10 @@ function renderCart() {
 function handleRemoveFromCart(event) {
   const cartId = event.target.dataset.cartId;
   cart = cart.filter(function (item) {
-    return item.cartId !== cartId;
-  });
-  renderCart();
+  return item.cartId !== cartId;
+});
+saveCart();
+renderCart();
 }
 
 checkoutBtn.addEventListener("click", function () {
@@ -186,3 +189,7 @@ checkoutBtn.addEventListener("click", function () {
 
 renderProducts();
 renderCart();
+
+function saveCart() {
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
