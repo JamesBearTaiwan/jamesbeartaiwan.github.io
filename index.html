@@ -10,13 +10,21 @@
   <header class="hero">
     <div class="container">
       <h1>Taiwan Tours Booking</h1>
-      <p>Choose your tours, select your travel date and number of people, then add them to your cart.</p>
+      <p class="hero-subtitle">
+        Choose the tour that fits your travel style. Select your date, choose the number of people, and add everything to your cart.
+      </p>
     </div>
   </header>
 
   <main class="container main-layout">
     <section class="products-section">
-      <h2>Available Tours</h2>
+      <div class="section-heading">
+        <h2>Yehliu, Jiufen & Shifen Tour Series</h2>
+        <p>
+          We offer several versions of this popular day trip route from Taipei, including classic, night view, scenic, and Instagram-worthy options.
+        </p>
+      </div>
+
       <div id="products" class="products-grid"></div>
     </section>
 
@@ -25,9 +33,12 @@
       <div id="cart-items" class="cart-items">
         <p class="empty-cart">Your cart is empty.</p>
       </div>
+
       <div class="cart-total">
         <strong>Total: <span id="cart-total">NT$0</span></strong>
       </div>
+
+      <button id="clear-cart-btn" class="secondary-btn" disabled>Clear Cart</button>
       <button id="checkout-btn" class="checkout-btn" disabled>Proceed to Booking</button>
     </aside>
   </main>
